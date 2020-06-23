@@ -1,0 +1,82 @@
+#include <stdio.h>  
+#include <string.h>  
+
+#define MAX_STUDENT_COUNT    3
+#define MAX_NAME_LENGTH      10
+
+#define PART_COUNT           4
+#define PART_DATA_SIZE       sizeof(int)*PART_COUNT
+
+#define KOR     0  
+#define ENG     1  
+#define MATH    2 
+#define TOTAL   3  
+
+void SwapScore(int a_score1[], int a_score2[])
+{
+    int temp[PART_COUNT];
+    memcpy(temp, a_score1, PART_DATA_SIZE);
+    memcpy(a_score1, a_score2, PART_DATA_SIZE);
+    memcpy(a_score2, temp, PART_DATA_SIZE);
+}
+
+void SwapName(char a_name1[], char a_name2[])
+{
+    char temp_name[MAX_NAME_LENGTH];
+    strcpy(temp_name, a_name1);
+    strcpy(a_name1, a_name2);
+    strcpy(a_name2, temp_name);
+}
+
+void BubbleSort(char a_name[][MAX_NAME_LENGTH], int a_score[][PART_COUNT])
+{
+    int i, j;
+    for (i = 0; i < MAX_STUDENT_COUNT - 1; i++) {
+        for (j = 0; j < MAX_STUDENT_COUNT - 1 - i; j++) {
+            if (a_score[j][TOTAL] < a_score[j + 1][TOTAL]) {
+                SwapName(a_name[j], a_name[j + 1]);  
+                SwapScore(a_score[j], a_score[j + 1]);
+            }
+        }
+    }
+}
+
+void InputData(char a_name[][MAX_NAME_LENGTH], int a_score[][PART_COUNT])
+{
+    int i;
+    for (i = 0; i < MAX_STUDENT_COUNT; i++) {
+        printf("%d 번째 학생 이름 : ", i + 1);
+        scanf("%s", a_name + i);
+        printf("국어 점수 : ");
+        scanf("%d", a_score[i] + KOR);
+        scanf("%d", a_score[i] + ENG); 
+        printf("수학 점수 : ");
+        scanf("%d", a_score[i] + MATH);
+        a_score[i][TOTAL] = a_score[i][KOR] + a_score[i][ENG] + a_score[i][MATH];
+        printf("\n");
+    }
+}
+
+void DisplayData(char a_name[][MAX_NAME_LENGTH], int a_score[][PART_COUNT])
+{
+    int i;
+
+    printf("  -----------------------------------------------------------------\n");
+    printf("    이름    국어  영어  수학  총점  평균  등수\n");
+    printf("  -----------------------------------------------------------------\n");
+    for (i = 0; i < MAX_STUDENT_COUNT; i++) {
+        printf("%9s   %3d   %3d   %3d   %3d   %3d %3d등\n",
+                a_name[i], a_score[i][KOR], a_score[i][ENG], a_score[i][MATH],
+                a_score[i][TOTAL], a_score[i][TOTAL] / MAX_STUDENT_COUNT, i + 1);
+    }
+}
+
+int main(void)
+{
+    char name[MAX_STUDENT_COUNT][MAX_NAME_LENGTH];  
+    int score[MAX_STUDENT_COUNT][PART_COUNT];
+    InputData(name, score);
+    BubbleSort(name, score);
+    printf("\n");
+    DisplayData(name, score);
+}
